@@ -68,10 +68,11 @@ namespace FinnZan.Utilities
                                 var toks = line.Split('\t');
 
                                 LogEvent e = new LogEvent();
-                                e.Time = toks[1];
+                                e.AppDomain = toks[1];
+                                e.Time = toks[2];
                                 e.ThreadID = int.Parse(toks[0]);
-                                e.Event = toks[2];
-                                e.CallStack = ParseCallStask(toks[3]);
+                                e.Event = toks[3];
+                                e.CallStack = ParseCallStask(toks[4]);
                                 if (e.CallStack != null)
                                 {
                                     e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";

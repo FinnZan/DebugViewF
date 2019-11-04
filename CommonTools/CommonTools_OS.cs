@@ -8,7 +8,6 @@
     using System.Text;
     using System.Windows;
     using System.Windows.Forms;
-    using System.Windows.Media.Imaging;
 
     public partial class CommonTools
     {
@@ -175,42 +174,9 @@
             return bSuccess;
         }
 
-        public static BitmapImage GetProfilePicture()
-        {
-            var sb = new StringBuilder(1000);
-            Win32Native.GetUserTilePath(Environment.UserName, 0x80000000, sb, sb.Capacity);
-            string path = sb.ToString();
-            CommonTools.Log("UserTilePath [" + Environment.UserName + "] [" + path + "]");
-            BitmapImage bmp = new BitmapImage(new Uri(path));
-            bmp.Freeze();
-            return bmp;
-        }
-
-        public static System.Windows.Point DPIScale
-        {
-            get
-            {
-                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
-
-                var dpiX = (int)dpiXProperty.GetValue(null, null);
-                var dpiY = (int)dpiYProperty.GetValue(null, null);
-
-                System.Windows.Point p = new System.Windows.Point((double)dpiX / 96F, (double)dpiY / 96F);
-
-                return p;
-            }
-        }
-
         public static bool IsMouseLeftButtonDown()
         {
             return Control.MouseButtons == MouseButtons.Left;
-        }
-
-        public static System.Drawing.Point GetMousePosition()
-        {
-            System.Drawing.Point point = Control.MousePosition;
-            return new System.Drawing.Point((int)((double)point.X / DPIScale.X), (int)((double)point.Y / DPIScale.Y));
-        }
+        }        
     }
 }

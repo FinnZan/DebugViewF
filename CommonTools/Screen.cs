@@ -17,15 +17,7 @@
                 yield return new Screen(screen);
             }
         }
-
-        public static Screen GetScreenFrom(Window window)
-        {
-            WindowInteropHelper windowInteropHelper = new WindowInteropHelper(window);
-            System.Windows.Forms.Screen screen = System.Windows.Forms.Screen.FromHandle(windowInteropHelper.Handle);
-            Screen wpfScreen = new Screen(screen);
-            return wpfScreen;
-        }
-
+        
         public static Screen GetScreenFrom(System.Windows.Point point)
         {
             int x = (int)Math.Round(point.X);

@@ -26,7 +26,7 @@ namespace TestApp
         {
             InitializeComponent();
 
-            CommonTools.InitializeDebugger("LogTest", App.Current);
+            CommonTools.InitializeDebugger("LogTest");
 
             Trace.WriteLine("here.");            
         }

@@ -31,17 +31,9 @@
         ///     How many layaer up on the stack we should go so we can show the actual method we are interested in 
         /// </param>
         /// <param name="writeFile"></param>        
-        public static string InitializeDebugger(string appName, Application app = null, int logDepth =1, bool writeFile = false)
-        {            
+        public static string InitializeDebugger(string appName, int logDepth = 1, bool writeFile = false)
+        {
             _stopWatch.Start();
-
-            if (app != null)
-            {
-                app.MainWindow.Closed += new EventHandler((object o, EventArgs e) =>
-                {
-                    UnInitializeDebugger();
-                });
-            }
 
             mLogEnabled = true;
             mAppName = appName.Replace(" ", "_");
@@ -68,12 +60,14 @@
                 {
                     CommonTools.Log("TRACE failed.");
                 }
-            }       
+            }
 
             return ret;
         }
 
-        public static void Log(string log, params object[] values)
+        private static long lastLogTime = 0;
+
+        public static void Log(string log, int levelShift = 0)
         {
             lock (mOutputLock)
             {
@@ -85,14 +79,16 @@
                 try
                 {
                     long tick = DateTime.Now.Ticks;
-                    long time = _stopWatch.ElapsedMilliseconds;
+                    var nt = _stopWatch.ElapsedMilliseconds;
+                    long time = (nt - lastLogTime);
+                    lastLogTime = nt;
                     int id = Thread.CurrentThread.ManagedThreadId;
                     string source = string.Empty;
-                    string strEvent = log;
+                    string strEvent = log;                    
 
                     try
                     {
-                        strEvent = string.Format(log, values);
+                        strEvent = string.Format(log);
                     }
                     catch (Exception ex)
                     {
@@ -105,13 +101,13 @@
                     try
                     {
                         StackTrace t = new StackTrace();
-                        StackFrame frame = t.GetFrame(mLogDepth);
+                        StackFrame frame = t.GetFrame(mLogDepth + levelShift);
                         if (frame != null)
                         {
                             source = frame.GetMethod().DeclaringType.Name + "." + frame.GetMethod().Name;
                         }
 
-                        for (int i = mLogDepth; i < t.GetFrames().Length; i++)
+                        for (int i = mLogDepth + levelShift; i < t.GetFrames().Length; i++)
                         {
                             try
                             {
@@ -133,7 +129,7 @@
                     }
 
                     // Start output 
-                    Output(id, time, strEvent, callstack);
+                    Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, callstack);
 
                 }
                 catch (Exception ex) { }
@@ -169,7 +165,7 @@
             }
 
             // start output
-            Output(id, time, strEvent, string.Empty);
+            Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, string.Empty);
         }
 
         private static string PutLogger()
@@ -185,7 +181,7 @@
 
                 LaunchProcessFromService lps = new LaunchProcessFromService();
                 lps.LaunchProcess(path, $" RunAsServer {mAppName}");
-                //Process.Start(path, $" RunAsServer {mAppName}");
+                //Process.Start(path, $" RunAsServer {mAppName}");                                
 
                 return "OK";
             }
@@ -229,7 +225,7 @@
                 Trace.Flush();
                 int count = 0;
                 byte[] buffer = new byte[_traceStream.Length];
-                count = _traceStream.Read(buffer, 0, (int)_traceStream.Length);
+                count = _traceStream.Read(buffer, 0, (int)_traceStream.Length);                
 
                 if (count > 0)
                 {
@@ -245,19 +241,10 @@
                         Array.Copy(buffer, 0, sub, 0, count);
                         str = Encoding.ASCII.GetString(sub).Trim();
                     }
-
-                    char[] splitors = { '\n', '\r' };
-                    string[] lines = str.Split(splitors);
-
+                    
                     long time = _stopWatch.ElapsedMilliseconds;
 
-                    foreach (var l in lines)
-                    {
-                        if (l.Length > 0)
-                        {
-                            Output(1, time, $"TRACE [{l.Trim()}]", string.Empty);
-                        }
-                    }
+                    Output(1, AppDomain.CurrentDomain.FriendlyName, time, $"TRACE [{str.Trim()}]", string.Empty);                 
                 }
             }
             catch (Exception ex)
@@ -266,7 +253,7 @@
             }
         }
 
-        private static bool Output(int id, long time, string strEvent, string pCallstack)
+        private static bool Output(int id, string appDomain, long time, string strEvent, string pCallstack)
         {
             string callstack = pCallstack;
 
@@ -274,7 +261,6 @@
             {
                 callstack = "none.none";
             }
-
 
             if (mWriteFile)
             {
@@ -298,7 +284,7 @@
                 NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", $"FinnZan_{mAppName}", PipeDirection.InOut, PipeOptions.None);
                 pipeClient.Connect(3 * 1000);
                 StreamWriter writer = new StreamWriter(pipeClient);
-                writer.WriteLine(id + "\t" + time + "\t" + strEvent + "\t" + callstack);
+                writer.WriteLine(id + "\t" + appDomain + "\t"+ time + "\t" + strEvent + "\t" + callstack);
                 writer.Flush();
                 pipeClient.Close();
             }
@@ -307,6 +293,6 @@
             }
 
             return true;
-        }      
+        }
     }
 }

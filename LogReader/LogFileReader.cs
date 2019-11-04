@@ -30,9 +30,10 @@ namespace FinnZan.Utilities
 
                         LogEvent e = new LogEvent();
                         e.Time = toks[1];
+                        e.AppDomain = toks[2];
                         e.ThreadID = int.Parse(toks[0]);
-                        e.Event = toks[2];                        
-                        e.CallStack = ParseCallStask(toks[3]);
+                        e.Event = toks[3];                        
+                        e.CallStack = ParseCallStask(toks[4]);
                         e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
                         Events.Insert(0, e);
                     }

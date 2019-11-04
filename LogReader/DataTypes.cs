@@ -58,6 +58,12 @@ namespace FinnZan.Utilities
             set;
         }
 
+        public string AppDomain
+        {
+            get;
+            set;
+        }
+
         public int ThreadID
         {
             get;
@@ -85,6 +91,7 @@ namespace FinnZan.Utilities
 
     public enum FilterType
     {
+        AppDomain,
         Source,
         Event,
         ThreadID,

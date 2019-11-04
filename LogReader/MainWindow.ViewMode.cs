@@ -45,12 +45,12 @@ namespace FinnZan.Utilities
         public List<Filter> Filters
         {
             get; private set;
-        }
+        } = new List<Filter>();
 
         public List<Filter> FiltersEx
         {
             get; private set;
-        }
+        } = new List<Filter>();
 
         #endregion
         
@@ -167,6 +167,11 @@ namespace FinnZan.Utilities
 
                 foreach (var f in Filters)
                 {
+                    if (f.Type == FilterType.AppDomain)
+                    {
+                        b |= e.AppDomain.ToLower().Contains(f.Key.ToLower());
+                    }
+
                     if (f.Type == FilterType.ThreadID)
                     {
                         b |= e.ThreadID == int.Parse(f.Key);
@@ -185,6 +190,11 @@ namespace FinnZan.Utilities
 
                 foreach (var f in FiltersEx)
                 {
+                    if (f.Type == FilterType.AppDomain && e.AppDomain.ToLower().Contains(f.Key.ToLower()))
+                    {
+                        b = false;
+                    }
+
                     if (f.Type == FilterType.ThreadID && e.ThreadID == int.Parse(f.Key))
                     {
                         b = false;
