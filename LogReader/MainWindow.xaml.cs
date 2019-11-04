@@ -40,10 +40,12 @@ namespace FinnZan.Utilities
                 lbAppName.Content = App.AppName;
                 this.Title = $"{App.AppName} Log View";
 
-                var ps = new PipeLogReceiver();
-                ps.StartListening(App.AppName);
+                //var ps = new PipeLogReceiver();
+                //ps.StartListening(App.AppName);
+                //_source = ps;
+                WcfLogReceiver.Instance.StartListening(App.AppName);
+                _source = WcfLogReceiver.Instance;
 
-                _source = ps;
                 _vm = new MainWindowViewModel(_source);
             }
             else

@@ -48,73 +48,43 @@ namespace FinnZan.Utilities
             get;
             set;
         }
-    }
 
-    public class LogEvent
-    {
-        public String Source
+        public static CallStackItem[] ParseCallStask(string l)
         {
-            get;
-            set;
-        }
+            char[] splitors = { '[', ']', ' ' };
+            List<CallStackItem> items = new List<CallStackItem>();
 
-        public string AppDomain
-        {
-            get;
-            set;
-        }
+            try
+            {
+                var toks = l.Split(splitors);
 
-        public int ThreadID
-        {
-            get;
-            set;
-        }
+                foreach (var t in toks.Where(o => o.Length > 0))
+                {
+                    try
+                    {
+                        CallStackItem c = new CallStackItem();
+                        var toks2 = t.Split('.');
+                        c.Class = toks2[0];
+                        c.Method = toks2[1];
 
-        public String Event
-        {
-            get;
-            set;
-        }
+                        items.Add(c);
+                    }
+                    catch (Exception ex)
+                    {
 
-        public string Time
-        {
-            get;
-            set;
-        }
+                    }
+                }
 
-        public CallStackItem[] CallStack
-        {
-            get;
-            set;
+                return items.ToArray();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
-    }
+    }    
 
-    public enum FilterType
-    {
-        AppDomain,
-        Source,
-        Event,
-        ThreadID,
-    };
-
-    public class Filter
-    {
-        public Filter(FilterType type, string key)
-        {
-            Type = type;
-            Key = key;
-        }
-
-        public FilterType Type
-        {
-            get; set;
-        }
-        public string Key
-        {
-            get; set;
-        }
-    }
-
+    
     #endregion
 
 }

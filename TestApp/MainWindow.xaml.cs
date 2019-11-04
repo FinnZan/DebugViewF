@@ -27,6 +27,7 @@ namespace TestApp
             InitializeComponent();
 
             CommonTools.InitializeDebugger("LogTest");
+            CommonTools.Log("Start.");
 
             Trace.WriteLine("here.");            
         }
@@ -68,7 +69,7 @@ namespace TestApp
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            var app = App.Current.MainWindow;            
+            Environment.Exit(0);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace FinnZan.Utilities
                         e.AppDomain = toks[2];
                         e.ThreadID = int.Parse(toks[0]);
                         e.Event = toks[3];                        
-                        e.CallStack = ParseCallStask(toks[4]);
+                        e.CallStack = CallStackItem.ParseCallStask(toks[4]);
                         e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
                         Events.Insert(0, e);
                     }
@@ -50,40 +50,6 @@ namespace FinnZan.Utilities
             {                
                 return null;
             }            
-        }
-
-        private CallStackItem[] ParseCallStask(string l)
-        {
-            char[] splitors = { '[', ']', ' ' };
-            List<CallStackItem> items = new List<CallStackItem>();
-
-            try
-            {
-                var toks = l.Split(splitors);
-
-                foreach (var t in toks.Where(o => o.Length > 0))
-                {
-                    try
-                    {
-                        CallStackItem c = new CallStackItem();
-                        var toks2 = t.Split('.');
-                        c.Class = toks2[0];
-                        c.Method = toks2[1];
-
-                        items.Add(c);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-
-                return items.ToArray();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
         }
     }
 }

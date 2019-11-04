@@ -26,15 +26,7 @@ namespace FinnZan.Utilities
         public bool StartListening(string name)
         {
             try
-            {
-                var timer = new DispatcherTimer();
-                timer.Tick += new EventHandler((object sender, EventArgs e) =>
-                {
-                    _logs.Add(new LogEvent() { Source = "timer", Event = "message", ThreadID = 0, Time = DateTime.Now.ToLongTimeString() });
-                    Updated();
-                });
-                timer.Interval = TimeSpan.FromSeconds(1);
-                //timer.Start();               
+            {       
 
                 new Thread(() =>
                 {
@@ -72,7 +64,7 @@ namespace FinnZan.Utilities
                                 e.Time = toks[2];
                                 e.ThreadID = int.Parse(toks[0]);
                                 e.Event = toks[3];
-                                e.CallStack = ParseCallStask(toks[4]);
+                                e.CallStack = CallStackItem.ParseCallStask(toks[4]);
                                 if (e.CallStack != null)
                                 {
                                     e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
@@ -104,41 +96,6 @@ namespace FinnZan.Utilities
             catch (Exception ex)
             {
                 return false;
-            }
-        }
-
-
-        private CallStackItem[] ParseCallStask(string l)
-        {
-            char[] splitors = { '[', ']', ' ' };
-            List<CallStackItem> items = new List<CallStackItem>();
-
-            try
-            {
-                var toks = l.Split(splitors);
-
-                foreach (var t in toks.Where(o => o.Length > 0))
-                {
-                    try
-                    {
-                        CallStackItem c = new CallStackItem();
-                        var toks2 = t.Split('.');
-                        c.Class = toks2[0];
-                        c.Method = toks2[1];
-
-                        items.Add(c);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-
-                return items.ToArray();
-            }
-            catch (Exception ex)
-            {
-                return null;
             }
         }
 

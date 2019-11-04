@@ -5,6 +5,7 @@
     using System.IO;
     using System.IO.Pipes;
     using System.Reflection;
+    using System.ServiceModel;
     using System.Text;
     using System.Threading;
     using System.Windows;
@@ -281,12 +282,13 @@
 
             try
             {
-                NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", $"FinnZan_{mAppName}", PipeDirection.InOut, PipeOptions.None);
-                pipeClient.Connect(3 * 1000);
-                StreamWriter writer = new StreamWriter(pipeClient);
-                writer.WriteLine(id + "\t" + appDomain + "\t"+ time + "\t" + strEvent + "\t" + callstack);
-                writer.Flush();
-                pipeClient.Close();
+                using (var myChannelFactory = new ChannelFactory<IFinnZanLog>(
+                    new NetTcpBinding(SecurityMode.None), 
+                    new EndpointAddress(new Uri($"net.tcp://localhost/FinnZanLog/{mAppName}")))) 
+                {
+                    var l =          myChannelFactory.CreateChannel();
+                    l.Log(id + "\t" + appDomain + "\t" + time + "\t" + strEvent + "\t" + callstack);
+                }
             }
             catch (Exception ex)
             {

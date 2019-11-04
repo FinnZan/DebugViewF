@@ -7,7 +7,7 @@
     <ProjectGuid>{43418398-67AC-4A59-8F8B-36FDEDF1A4FB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dell.Utilities</RootNamespace>
+    <RootNamespace>FinnZan.Utilities</RootNamespace>
     <AssemblyName>LogReader</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,6 +40,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -58,6 +59,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Filter.cs" />
+    <Compile Include="LogEvent.cs" />
+    <Compile Include="WcfLogReceiver.cs" />
     <Page Include="AppNameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -73,8 +77,9 @@
     <Compile Include="AppNameDialog.xaml.cs">
       <DependentUpon>AppNameDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataTypes.cs" />
+    <Compile Include="CallStackItem.cs" />
     <Compile Include="IEventSource.cs" />
+    <Compile Include="IFinnZanLog.cs" />
     <Compile Include="LogFileReader.cs" />
     <Compile Include="MainWindow.ViewMode.cs" />
     <Compile Include="MainWindow.xaml.cs">
