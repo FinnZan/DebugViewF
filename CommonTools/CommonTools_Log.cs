@@ -8,6 +8,7 @@
     using System.ServiceModel;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
 
     public partial class CommonTools
@@ -130,8 +131,10 @@
                     }
 
                     // Start output 
-                    Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, callstack);
-
+                    Task.Run(() =>
+                    {
+                        Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, callstack);
+                    });
                 }
                 catch (Exception ex) { }
             }

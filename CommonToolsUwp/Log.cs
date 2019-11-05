@@ -91,7 +91,10 @@ namespace FinnZan.Utilities
                     }
 
                     // Start output 
-                    Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, callstack);
+                    Task.Run(() =>
+                    {
+                        Output(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, callstack);
+                    });
                 }
                 catch (Exception ex) { }
             }
