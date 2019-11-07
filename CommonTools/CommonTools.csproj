@@ -73,6 +73,7 @@
     <Compile Include="CommonTools.cs" />
     <Compile Include="CommonTools_Log.cs" />
     <Compile Include="CommonTools_OS.cs" />
+    <Compile Include="LoggerCore.cs" />
     <Compile Include="Tools\LaunchProcessFromService.cs" />
     <Compile Include="Tools\LogonUtility.cs" />
     <Compile Include="Tools\ProducerConsumerStream.cs" />
