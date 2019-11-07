@@ -21,7 +21,7 @@ namespace FinnZan.Utilities
         public static void Start(string name, int logDepth)
         {
             _appName = name;
-            _logDepth = logDepth;
+            _logDepth = logDepth + 1;
 
             StopWatch.Start();
             
