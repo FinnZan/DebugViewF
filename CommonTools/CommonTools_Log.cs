@@ -29,32 +29,30 @@
         {
             _appName = appName.Replace(" ", "_");
 
-            var ret = PutLogger();
-
+            PutLogger();
+            
             LoggerCore.Start(_appName, logDepth);
 
-            if (ret == "OK")
+            if(AttachTraceListener())
             {
-                if (AttachTraceListener())
-                {
-                    new Thread(() =>
+                new Thread(
+                    () =>
                     {
-                        while (_running)
+                        while(_running)
                         {
                             ReadTrace();
                             Thread.Sleep(500);
                         }
                     }).Start();
-                }
-                else
-                {
-                    LoggerCore.Log("TRACE failed.");
-                }
+            }
+            else
+            {
+                LoggerCore.Log("TRACE failed.");
             }
 
             _logEnabled = true;
 
-            return ret;
+            return string.Empty;
         }
 
         public static void Log(string log, int levelShift = 0)
@@ -75,8 +73,20 @@
 
         #region Private
 
-        private static string PutLogger()
+        private static void PutLogger()
         {
+            var name = $"{_appName} Log View";
+
+            Process[] processlist = Process.GetProcesses();
+
+            foreach (Process process in processlist)
+            {
+                if (!String.IsNullOrEmpty(process.MainWindowTitle) && process.MainWindowTitle == name)
+                {
+                    return;
+                }
+            }
+
             try
             {
                 var codeBase = Assembly.GetExecutingAssembly().CodeBase;
@@ -87,21 +97,17 @@
                 File.WriteAllBytes(path, Resources.LogReader);
 
                 var lps = new LaunchProcessFromService();
-                lps.LaunchProcess(path, $" RunAsServer {_appName}");                     
-
-                return "OK";
+                lps.LaunchProcess(path, $" RunAsServer {_appName}");       
             }
             catch (Exception ex)
             {
                 if (ex.ToString().Contains("LogReader.exe' because it is being used by another process."))
                 {
                     LoggerCore.Log("LogReader already running.");
-                    return "OK";
                 }
                 else
                 {
                     LoggerCore.HandleException(ex);
-                    return ex.ToString();
                 }
             }
         }

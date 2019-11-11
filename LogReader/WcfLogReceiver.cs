@@ -33,29 +33,32 @@ namespace FinnZan.Utilities
 
         public event SourceEventHandler Updated;
 
-        public void Add(string log)
+        public void Add(List<string> logs)
         {
-            var toks = log.Split('\t');
+            foreach(var log in logs)
+            {
+                var toks = log.Split('\t');
 
-            LogEvent e = new LogEvent();
-            e.AppDomain = toks[1];
-            e.Time = toks[2];
-            e.ThreadID = int.Parse(toks[0]);
-            e.Event = toks[3];
-            e.CallStack = CallStackItem.ParseCallStask(toks[4]);
-            if (e.CallStack != null)
-            {
-                e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
-            }
-            else
-            {
-                e.Source = string.Empty;
-            }
+                LogEvent e = new LogEvent();
+                e.AppDomain = toks[1];
+                e.Time = toks[2];
+                e.ThreadID = int.Parse(toks[0]);
+                e.Event = toks[3];
+                e.CallStack = CallStackItem.ParseCallStask(toks[4]);
+                if(e.CallStack != null)
+                {
+                    e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
+                }
+                else
+                {
+                    e.Source = string.Empty;
+                }
 
-            lock (Events)
-            {
-                Events.Insert(0,e);
-                Updated();
+                lock(Events)
+                {
+                    Events.Insert(0, e);
+                    Updated();
+                }
             }
         }
 
@@ -71,7 +74,7 @@ namespace FinnZan.Utilities
 
     public class FinnZanLog : IFinnZanLog
     {
-        public void Log(string log)
+        public void Log(List<string> log)
         {
             WcfLogReceiver.Instance.Add(log);            
         }

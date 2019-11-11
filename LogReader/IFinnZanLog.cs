@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace FinnZan.Utilities
 {
@@ -6,6 +7,6 @@ namespace FinnZan.Utilities
     interface IFinnZanLog
     {
         [OperationContract(Name = "Log")]
-        void Log(string log);
+        void Log(List<string> logs);
     }
 }

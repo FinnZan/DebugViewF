@@ -17,44 +17,47 @@ namespace FinnZan.Utilities
 
         private static readonly List<string> OutQueue = new List<string>();
         private static readonly AutoResetEvent WaitHandle = new AutoResetEvent(false);
-        
+
         public static void Start(string name, int logDepth)
         {
             _appName = name;
             _logDepth = logDepth + 1;
 
             StopWatch.Start();
-            
-            Task.Run(() =>
+
+            Task.Run(FlushFunc);
+        }
+
+        private static void FlushFunc()
+        {
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
+                    WaitHandle.WaitOne();
+
+                    List<string> toWrite = new List<string>();
+
+                    lock (OutQueue)
                     {
-                        WaitHandle.WaitOne();
-
-                        List<string> toWrite = new List<string>();
-
-                        lock (OutQueue)
-                        {
-                            toWrite.AddRange(OutQueue);
-                            OutQueue.Clear();
-                        }
-
-                        if (toWrite.Count > 0)
-                        {
-                            foreach (var l in toWrite)
-                            {
-                                WriteEvent(l);
-                            }
-                        }
+                        toWrite.AddRange(OutQueue);
+                        OutQueue.Clear();
                     }
-                    catch (Exception ex)
+
+                    if (toWrite.Count > 0)
                     {
-                        Task.Delay(1000);
+                        using (var myChannelFactory = new ChannelFactory<IFinnZanLog>(new NetTcpBinding(SecurityMode.None), new EndpointAddress(new Uri($"net.tcp://localhost/FinnZanLog/{_appName}"))))
+                        {
+                            var c = myChannelFactory.CreateChannel();
+                            c.Log(toWrite);
+                        }
                     }
                 }
-            });
+                catch (Exception ex)
+                {
+                    Task.Delay(1000);
+                }
+            }
         }
 
         public static void LogTrace(string log)
@@ -121,23 +124,6 @@ namespace FinnZan.Utilities
 
                 // start output
                 QueueEvent(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, string.Empty);
-            }
-        }
-        
-        private static void WriteEvent(string strLog)
-        {
-            try
-            {
-                using (var myChannelFactory = new ChannelFactory<IFinnZanLog>(
-                    new NetTcpBinding(SecurityMode.None),
-                    new EndpointAddress(new Uri($"net.tcp://localhost/FinnZanLog/{_appName}"))))
-                {
-                    var l = myChannelFactory.CreateChannel();
-                    l.Log(strLog);
-                }
-            }
-            catch (Exception ex)
-            {
             }
         }
 
