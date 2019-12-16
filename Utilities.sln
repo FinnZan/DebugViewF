@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonToolsUwp", "CommonToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAppUwp", "TestAppUwp\TestAppUwp.csproj", "{42F21FB4-0142-4091-AEAB-ED15C079CCE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceViewer", "ReferenceViewer\ReferenceViewer.csproj", "{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,12 @@ Global
 		{42F21FB4-0142-4091-AEAB-ED15C079CCE5}.Signed|Any CPU.ActiveCfg = Release|x64
 		{42F21FB4-0142-4091-AEAB-ED15C079CCE5}.Signed|Any CPU.Build.0 = Release|x64
 		{42F21FB4-0142-4091-AEAB-ED15C079CCE5}.Signed|Any CPU.Deploy.0 = Release|x64
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Signed|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Signed|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
