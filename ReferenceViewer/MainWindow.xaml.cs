@@ -9,11 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml.Linq;
+using Path = System.IO.Path;
 
 namespace ReferenceViewer
 {
@@ -23,10 +20,12 @@ namespace ReferenceViewer
     public partial class MainWindow : Window
     {
         private string _path = @"E:\Dell\Projects\DPM\src\dpm\Source";
-
+        
         public MainWindow()
         {
             InitializeComponent();
+            
+            tbSolutionPath.Text = @"E:\Dell\Projects\DPM\src\dpm\Source";
 
             lbResult.ItemsSource = Load();
         }
@@ -39,59 +38,81 @@ namespace ReferenceViewer
             }
         }
 
-        private List<KeyValuePair<string, List<string>>> Load()
+        private List<AssemblyFile> Load()
         {
             var allProjects = Directory.GetFiles(_path, "*.csproj", SearchOption.AllDirectories);
 
-            var results = new Dictionary<string, List<string>>();
+            var results = new List<AssemblyFile>();
 
-            foreach (var f in allProjects)
+            foreach(var f in allProjects)
             {
                 var proj = XDocument.Load(f).Root;
                 var projName = System.IO.Path.GetFileName(f);
 
-                foreach (var ig in proj.Elements().Where(e => e.Name.LocalName == "ItemGroup"))
+                foreach(var ig in proj.Elements().Where(e => e.Name.LocalName == "ItemGroup"))
                 {
-                    foreach (var r in ig.Elements().Where(e => e.Name.LocalName == "Reference"))
+                    foreach(var r in ig.Elements().Where(e => e.Name.LocalName == "Reference"))
                     {
-                        var hint = GetHintPath(r);
-
-                        if (hint != null)
+                        try
                         {
-                            if (results.ContainsKey(hint))
+                            var hint = GetHintPath(r);
+
+                            if(hint != null)
                             {
-                                results[hint].Add(projName);
+                                var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(f), hint));
+
+                                AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
+                                if (asmb == null)
+                                {
+                                    var time = GetFileTime(fullPath);
+                                    asmb = new AssemblyFile(fullPath, time);
+                                    results.Add(asmb);
+                                }
+                                asmb.Projects.Add(projName);
                             }
-                            else
-                            {
-                                results.Add(hint, new List<string>() { projName });
-                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
                         }
                     }
                 }
             }
 
-            List<KeyValuePair<string, List<string>>> ret = results.ToList();
-
-            ret.Sort(delegate (KeyValuePair<string, List<string>> pair1, KeyValuePair<string, List<string>> pair2)
+            results.Sort(
+                delegate(AssemblyFile a, AssemblyFile b)
                 {
-                    return pair1.Key.CompareTo(pair2.Key);
+                    if (a.Name != b.Name)
+                    {
+                        return a.Name.CompareTo(b.Name);
+                    }
+                    else
+                    {
+                        return a.FullPath.CompareTo(b.FullPath);
+                    }
                 }
             );
 
-            return ret;
+            return results;
         }
 
         private string GetHintPath(XElement r)
         {
-            if (r.Elements().Where(e => e.Name.LocalName == "HintPath").Any())
+            if (r.Elements().Any(e => e.Name.LocalName == "HintPath"))
             {
-                return r.Elements().Where(e => e.Name.LocalName == "HintPath").First().Value;
+                return r.Elements().First(e => e.Name.LocalName == "HintPath").Value;
             }
             else
             {
                 return null;
             }
+        }
+        private DateTime GetFileTime(string fullPath)
+        {
+            var lastWrite = File.GetLastWriteTime(fullPath);
+            var create = File.GetCreationTime(fullPath);
+
+            return lastWrite < create ? create : lastWrite;
         }
     }
 }
