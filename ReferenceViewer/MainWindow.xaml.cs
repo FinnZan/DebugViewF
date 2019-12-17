@@ -19,8 +19,6 @@ namespace ReferenceViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string _path = @"E:\Dell\Projects\DPM\src\dpm\Source";
-        
         public MainWindow()
         {
             InitializeComponent();
@@ -40,41 +38,31 @@ namespace ReferenceViewer
 
         private List<AssemblyFile> Load()
         {
-            var allProjects = Directory.GetFiles(_path, "*.csproj", SearchOption.AllDirectories);
+            if(!Directory.Exists(tbSolutionPath.Text))
+            {
+                MessageBox.Show("Folder not exist");
+                return new List<AssemblyFile>();
+            }
+
+            var allProjects = Directory.GetFiles(tbSolutionPath.Text, "*.csproj", SearchOption.AllDirectories);
 
             var results = new List<AssemblyFile>();
 
-            foreach(var f in allProjects)
+            foreach(var projFile in allProjects)
             {
-                var proj = XDocument.Load(f).Root;
-                var projName = System.IO.Path.GetFileName(f);
+                var projNode = XDocument.Load(projFile).Root;
+                var projName = System.IO.Path.GetFileName(projFile);
 
-                foreach(var ig in proj.Elements().Where(e => e.Name.LocalName == "ItemGroup"))
+                foreach(var ig in projNode.Elements().Where(e => e.Name.LocalName == "ItemGroup"))
                 {
                     foreach(var r in ig.Elements().Where(e => e.Name.LocalName == "Reference"))
                     {
-                        try
-                        {
-                            var hint = GetHintPath(r);
+                        AddReference(r, projName, projFile, results);
+                    }
 
-                            if(hint != null)
-                            {
-                                var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(f), hint));
-
-                                AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
-                                if (asmb == null)
-                                {
-                                    var time = GetFileTime(fullPath);
-                                    asmb = new AssemblyFile(fullPath, time);
-                                    results.Add(asmb);
-                                }
-                                asmb.Projects.Add(projName);
-                            }
-                        }
-                        catch(Exception ex)
-                        {
-                            MessageBox.Show(ex.ToString());
-                        }
+                    foreach (var r in ig.Elements().Where(e => e.Name.LocalName == "Content" && e.Attribute("Include") != null))
+                    {
+                        AddLink(r, projName, projFile, results);
                     }
                 }
             }
@@ -94,6 +82,65 @@ namespace ReferenceViewer
             );
 
             return results;
+        }
+
+        private void AddReference(XElement r, string projName, string projectFile, List<AssemblyFile> results)
+        {
+            try
+            {
+                var hint = GetHintPath(r);
+
+                if(hint != null)
+                {
+                    var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(projectFile), hint));
+
+                    AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
+                    if(asmb == null)
+                    {
+                        var time = GetFileTime(fullPath);
+                        asmb = new AssemblyFile(fullPath, time);
+                        results.Add(asmb);
+                    }
+                    asmb.Projects.Add(
+                        new Project()
+                        {
+                            Name = projName,
+                            Usage = UsageType.Reference
+                        });
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void AddLink(XElement r, string projName, string projectFile, List<AssemblyFile> results)
+        {
+            try
+            {
+                var link = r.Attribute("Include").Value;
+                if(link.EndsWith(".dll"))
+                {
+                    var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(projectFile), link));
+
+                    AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
+                    if(asmb == null)
+                    {
+                        var time = GetFileTime(fullPath);
+                        asmb = new AssemblyFile(fullPath, time);
+                        results.Add(asmb);
+                    }
+                    asmb.Projects.Add( new Project(){
+                         Name = projName,
+                          Usage = UsageType.Link
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private string GetHintPath(XElement r)

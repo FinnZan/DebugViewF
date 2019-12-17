@@ -16,7 +16,7 @@
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid  Background="#EEEEEE" >
-            <Grid Margin="5">
+            <Grid Margin="2">
               <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
@@ -26,7 +26,15 @@
                 <Label Content="{Binding LastModified}" FontSize="10"></Label>
                 <Label Content="{Binding FullPath}" FontSize="10"></Label>
               </StackPanel>
-              <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch">
+              <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                      <Label Content="{Binding Usage}"></Label>
+                      <Label Content="{Binding Name}" FontWeight="Bold"></Label>
+                    </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
               </ListBox>
             </Grid>
           </Grid>

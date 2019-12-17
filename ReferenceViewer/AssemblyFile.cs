@@ -9,7 +9,7 @@ namespace ReferenceViewer
         public AssemblyFile(string path, DateTime time)
         {
             FullPath = path;
-            Projects = new List<string>();
+            Projects = new List<Project>();
             LastModified = time;
         }
 
@@ -19,6 +19,29 @@ namespace ReferenceViewer
 
         public string FullPath { get; }
 
-        public List<string> Projects { get; }
+        public List<Project> Projects { get; }
+    }
+
+    public enum UsageType
+    {
+        Reference,
+        Link
+    }
+
+
+    public class Project
+    {
+        public Project() { }
+
+        public string Name{
+            get;
+            set;
+        }
+
+        public UsageType Usage
+        {
+            get;
+            set;
+        }
     }
 }
