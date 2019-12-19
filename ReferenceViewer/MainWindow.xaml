@@ -11,35 +11,77 @@
       <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition Height="*"></RowDefinition>
     </Grid.RowDefinitions>
-    <TextBlock x:Name="tbSolutionPath" Margin="10" FontWeight="Bold" FontSize="16"></TextBlock>
-    <ListBox x:Name="lbResult" HorizontalContentAlignment="Stretch" Grid.Row="1">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <Grid  Background="#EEEEEE" >
-            <Grid Margin="2">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-              </Grid.RowDefinitions>
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <Label Content="{Binding Name}" FontWeight="Bold"></Label>
-                <Label Content="{Binding LastModified}" FontSize="10"></Label>
-                <Label Content="{Binding FullPath}" FontSize="10"></Label>
-              </StackPanel>
-              <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1">
-                <ListBox.ItemTemplate>
-                  <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="1">
-                      <Label Content="{Binding Usage}"></Label>
+    <TextBox x:Name="tbSolutionPath" Margin="10" FontWeight="Bold" FontSize="16"></TextBox>
+    <TabControl Grid.Row="1">
+      <TabItem Header="Local Assemblies">
+        <ListBox x:Name="lbResult" HorizontalContentAlignment="Stretch">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid  Background="#EEEEEE" >
+                <Grid Margin="2">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                  </Grid.RowDefinitions>
+                  <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                       <Label Content="{Binding Name}" FontWeight="Bold"></Label>
+                      <Label>  </Label>
+                      <Label Content="Is local:"></Label>
+                      <Label FontWeight="Bold" Content="{Binding IsLocal}"></Label>
                     </StackPanel>
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </Grid>
-          </Grid>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                      <Label Content="{Binding LastModified}" FontSize="10"></Label>
+                      <Label Content="{Binding ActualPath}" FontSize="10"></Label>
+                    </StackPanel>
+                  </StackPanel>
+                  <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="1">
+                          <Label Content="{Binding Usage}"></Label>
+                          <Label Content="{Binding ProjectName}" FontWeight="Bold"></Label>
+                          <Label Content="{Binding ReferencePath}" FontSize="10"></Label>
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </Grid>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </TabItem>
+      <TabItem Header="Nuget Packages">
+        <ListBox x:Name="lbxNugetResult" HorizontalContentAlignment="Stretch">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid  Background="#EEEEEE" IsEnabled="{Binding HasConflict}" >
+                <Grid Margin="2">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                  </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                      <Label Content="{Binding Name}" FontWeight="Bold"></Label>
+                  </StackPanel>
+                  <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick" >
+                    <ListBox.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="1">
+                          <Label Content="{Binding Version}"></Label>
+                          <Label Content="{Binding ProjectName}" FontWeight="Bold"></Label>
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </Grid>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </TabItem>
+    </TabControl>
+  
   </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,36 +20,39 @@ namespace ReferenceViewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string _root = "";
+
+
         public MainWindow()
         {
             InitializeComponent();
             
             tbSolutionPath.Text = @"E:\Dell\Projects\DPM\src\dpm\Source";
-
-            lbResult.ItemsSource = Load();
+            Load();
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.F5)
             {
-                lbResult.ItemsSource = null;
-                lbResult.ItemsSource = Load();
+                Load();
             }
         }
 
-        private List<AssemblyFile> Load()
+        private void Load()
         {
-            if(!Directory.Exists(tbSolutionPath.Text))
+            _root = Path.Combine(tbSolutionPath.Text);
+
+            if (!Directory.Exists(_root))
             {
                 MessageBox.Show("Folder not exist");
-                return new List<AssemblyFile>();
             }
 
-            var allProjects = Directory.GetFiles(tbSolutionPath.Text, "*.csproj", SearchOption.AllDirectories);
+            var allProjects = Directory.GetFiles(_root, "*.csproj", SearchOption.AllDirectories);
 
-            var results = new List<AssemblyFile>();
+            var assemblies = new List<AssemblyFile>();
+            var packages = new List<NugetPackage>();
 
-            foreach(var projFile in allProjects)
+            foreach (var projFile in allProjects)
             {
                 var projNode = XDocument.Load(projFile).Root;
                 var projName = System.IO.Path.GetFileName(projFile);
@@ -57,32 +61,66 @@ namespace ReferenceViewer
                 {
                     foreach(var r in ig.Elements().Where(e => e.Name.LocalName == "Reference"))
                     {
-                        AddReference(r, projName, projFile, results);
+                        AddReference(r, projName, projFile, assemblies);
                     }
 
                     foreach (var r in ig.Elements().Where(e => e.Name.LocalName == "Content" && e.Attribute("Include") != null))
                     {
-                        AddLink(r, projName, projFile, results);
+                        AddLink(r, projName, projFile, assemblies);
+                    }
+
+                    foreach (var r in ig.Elements().Where(e => e.Name.LocalName == "PackageReference"))
+                    {
+                        AddPackageReference(r, projName, projFile, packages);
                     }
                 }
             }
 
-            results.Sort(
-                delegate(AssemblyFile a, AssemblyFile b)
-                {
-                    if (a.Name != b.Name)
-                    {
-                        return a.Name.CompareTo(b.Name);
-                    }
-                    else
-                    {
-                        return a.FullPath.CompareTo(b.FullPath);
-                    }
-                }
-            );
+            assemblies.Sort((a, b) => a.IsLocal != b.IsLocal ? (a.IsLocal ? 1 : -1) : (a.Name != b.Name ? a.Name.CompareTo(b.Name) : a.ActualPath.CompareTo(b.ActualPath)));
 
-            return results;
+
+            packages.Sort((a, b) => a.HasConflict != b.HasConflict ? (a.HasConflict ? -1 : 1) : a.Name.CompareTo(b.Name));
+
+            lbResult.ItemsSource = null;
+            lbResult.ItemsSource = assemblies;
+
+            lbxNugetResult.ItemsSource = null;
+            lbxNugetResult.ItemsSource = packages;
         }
+
+        private void AddPackageReference(XElement r, string projName, string projectFile, List<NugetPackage> packages)
+        {
+            try
+            {
+                var name = r.Attribute("Include").Value;
+
+                if (name != null)
+                {
+                    NugetPackage pkg = packages.SingleOrDefault(o => o.Name == name);
+
+                    var version = "Unknown";
+
+                    if (r.Elements().Any(e => e.Name.LocalName == "Version"))
+                    {
+                        version = r.Elements().First(e => e.Name.LocalName == "Version").Value;
+                    }
+                    
+                    if (pkg == null)
+                    {
+                        pkg = new NugetPackage(name);
+                        packages.Add(pkg);
+                    }
+                    pkg.Projects.Add(new NugetReference(projName, projectFile, version));
+
+                    pkg.Projects.Sort((a, b) => b.Version.CompareTo(a.Version));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
 
         private void AddReference(XElement r, string projName, string projectFile, List<AssemblyFile> results)
         {
@@ -92,21 +130,16 @@ namespace ReferenceViewer
 
                 if(hint != null)
                 {
-                    var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(projectFile), hint));
+                    var fullPath = ResolveFullPath(projectFile, hint);
 
-                    AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
+                    AssemblyFile asmb = results.SingleOrDefault(o => o.ActualPath == fullPath);
                     if(asmb == null)
                     {
                         var time = GetFileTime(fullPath);
-                        asmb = new AssemblyFile(fullPath, time);
+                        asmb = new AssemblyFile(fullPath, time, fullPath.StartsWith(_root));
                         results.Add(asmb);
                     }
-                    asmb.Projects.Add(
-                        new Project()
-                        {
-                            Name = projName,
-                            Usage = UsageType.Reference
-                        });
+                    asmb.Projects.Add(new AssemblyReference(projName, projectFile, UsageType.Reference, hint));
                 }
             }
             catch(Exception ex)
@@ -122,25 +155,29 @@ namespace ReferenceViewer
                 var link = r.Attribute("Include").Value;
                 if(link.EndsWith(".dll"))
                 {
-                    var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(projectFile), link));
+                    var fullPath = ResolveFullPath(projectFile, link);
 
-                    AssemblyFile asmb = results.SingleOrDefault(o => o.FullPath == fullPath);
+                    AssemblyFile asmb = results.SingleOrDefault(o => o.ActualPath == fullPath);
                     if(asmb == null)
                     {
                         var time = GetFileTime(fullPath);
-                        asmb = new AssemblyFile(fullPath, time);
+                        asmb = new AssemblyFile(fullPath, time, fullPath.StartsWith(_root));
                         results.Add(asmb);
                     }
-                    asmb.Projects.Add( new Project(){
-                         Name = projName,
-                          Usage = UsageType.Link
-                    });
+                    asmb.Projects.Add(new AssemblyReference(projName, projectFile, UsageType.Link, link));
                 }
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private string ResolveFullPath(string projectFile, string path)
+        {
+            var fullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(projectFile), path));
+            fullPath = fullPath.Replace("$(Configuration)", "Debug");
+            return fullPath;
         }
 
         private string GetHintPath(XElement r)
@@ -160,6 +197,32 @@ namespace ReferenceViewer
             var create = File.GetCreationTime(fullPath);
 
             return lastWrite < create ? create : lastWrite;
+        }
+
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var selected = ((ListBox)sender).SelectedItem;
+
+                if (selected is NugetReference)
+                {
+                    var proj = selected as NugetReference;
+
+                    var cmd = $@"'C:\Program Files (x86)\Notepad++\notepad++.exe'' ''{proj.ProjecFile}''";
+                    Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", proj.ProjecFile);
+                }
+                else if(selected is AssemblyReference)
+                {
+                    var proj = selected as AssemblyReference;
+                    var cmd = $@"'C:\Program Files (x86)\Notepad++\notepad++.exe'' ''{proj.ProjecFile}''";
+                    Process.Start(@"C:\Program Files (x86)\Notepad++\notepad++.exe", proj.ProjecFile);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
