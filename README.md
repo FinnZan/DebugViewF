@@ -5,3 +5,6 @@ In Desktop apps, CommonTools.InitializeDebugger() drops and launches the LogRead
 
 In UWP apps, LogReader has to be launched manually with the following command:
 LogReader.exe RunAsServer [NameOfApp]
+
+![](https://github.com/FinnZan/DebugViewF/blob/master/Screenshots/01.jpg)
+![](https://github.com/FinnZan/DebugViewF/blob/master/Screenshots/02.jpg)
