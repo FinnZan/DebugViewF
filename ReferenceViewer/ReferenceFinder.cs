@@ -57,7 +57,7 @@ namespace ReferenceViewer
 
             Assemblies.Sort((a, b) => a.IsLocal != b.IsLocal ? (a.IsLocal ? 1 : -1) : (a.Name != b.Name ? a.Name.CompareTo(b.Name) : a.ActualPath.CompareTo(b.ActualPath)));
 
-            NuGetPackages.Sort((a, b) => a.HasConflict != b.HasConflict ? (a.HasConflict ? -1 : 1) : a.Name.CompareTo(b.Name));
+            NuGetPackages.Sort((a, b) => a.IsConsistent != b.IsConsistent ? (a.IsConsistent ? 1 : -1) : a.Name.CompareTo(b.Name));
         }
 
         private void AddPackageReference(XElement r, string projName, string projectFile)

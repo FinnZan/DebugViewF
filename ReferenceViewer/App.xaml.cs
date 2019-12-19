@@ -13,5 +13,6 @@ namespace ReferenceViewer
     /// </summary>
     public partial class App : Application
     {
+        public const string TextEditor = @"C:\Program Files (x86)\Notepad++\notepad++.exe";
     }
 }

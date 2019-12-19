@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ReferenceViewer
 {
@@ -12,9 +15,7 @@ namespace ReferenceViewer
     public partial class MainWindow : Window
     {
         private ReferenceFinder _referenceFinder = new ReferenceFinder();
-
-        private const string TextEditor = @"C:\Program Files (x86)\Notepad++\notepad++.exe";
-
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -60,33 +61,20 @@ namespace ReferenceViewer
                 Reload();
             }
         }
+    }
 
-        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    public class BooleanToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            try
-            {
-                var selected = ((ListBox)sender).SelectedItem;
+            var b = (bool)value;
 
-                switch(selected)
-                {
-                    case NugetReference reference:
-                    {
-                        var proj = reference;
-                        Process.Start(TextEditor, proj.ProjecFile);
-                        break;
-                    }
-                    case AssemblyReference reference:
-                    {
-                        var proj = reference;
-                        Process.Start(TextEditor, proj.ProjecFile);
-                        break;
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            return b ? Color.FromRgb(0xEE, 0xEE, 0xEE) : Color.FromRgb(0xFF, 0xEE, 0xEE);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

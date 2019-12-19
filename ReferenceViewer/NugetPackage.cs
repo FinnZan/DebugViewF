@@ -20,7 +20,7 @@ namespace ReferenceViewer
             get;
         }
 
-        public bool HasConflict
+        public bool IsConsistent
         {
             get
             {
@@ -35,12 +35,12 @@ namespace ReferenceViewer
                     {
                         if(last != p.Version)
                         {
-                            return true;
+                            return false;
                         }
                     }
                 }
 
-                return false;
+                return true;
             }
         }
     }
