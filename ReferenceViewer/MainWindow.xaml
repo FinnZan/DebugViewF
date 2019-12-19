@@ -13,7 +13,7 @@
     </Grid.RowDefinitions>
     <TextBox x:Name="tbSolutionPath" Margin="10" FontWeight="Bold" FontSize="16"></TextBox>
     <TabControl Grid.Row="1">
-      <TabItem Header="Local Assemblies">
+      <TabItem Header="Assemblies">
         <ListBox x:Name="lbResult" HorizontalContentAlignment="Stretch">
           <ListBox.ItemTemplate>
             <DataTemplate>
