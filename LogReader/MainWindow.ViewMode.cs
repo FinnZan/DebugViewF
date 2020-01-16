@@ -35,12 +35,13 @@ namespace FinnZan.Utilities
         }
 
         /// <summary>
-        /// List with Filter on, the actual list is stroed in event source 
+        /// List with Filter on, the actual list is stored in event source 
         /// </summary>        
         public ObservableCollection<LogEvent> DisplayEvents
         {
             get; private set;
         }
+        public List<string> AppDomains => (from z in _source.Events orderby z.AppDomain select z.AppDomain).Distinct().ToList();
 
         public List<Filter> Filters
         {
@@ -147,6 +148,7 @@ namespace FinnZan.Utilities
                 }
                 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisplayEvents"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AppDomains"));
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace FinnZan.Utilities
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// Mostly doing bindings and commands
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -21,6 +23,7 @@ namespace FinnZan.Utilities
 
         public MainWindow()
         {
+            //Debugger.Launch();
             InitializeComponent();                                  
         }
 
@@ -70,7 +73,20 @@ namespace FinnZan.Utilities
                     lbxFiltersEx.ItemsSource = null;
                     lbxFiltersEx.ItemsSource = _vm.FiltersEx;
                 }
+
+                if (e.PropertyName == "AppDomains")
+                {
+                    BindAppDomains();
+                }
             });
+        }
+
+        private void BindAppDomains()
+        {
+            if (_vm != null && ((FilterType)cbxFilterTypes.SelectedItem) == FilterType.AppDomain)
+            {
+                tbKey.ItemsSource = _vm.AppDomains;
+            }
         }
         
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -102,9 +118,9 @@ namespace FinnZan.Utilities
             panelStackTrace.Visibility = Visibility.Collapsed;
         }
 
-        private void btHide_Click(object sender, RoutedEventArgs e)
+        private void cbxFilterTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.Hide();
+            BindAppDomains();
         }
 
         private void btFilters_Click(object sender, RoutedEventArgs e)
