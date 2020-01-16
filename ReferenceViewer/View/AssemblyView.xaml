@@ -26,7 +26,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Content="{Binding LastModified}" FontSize="10"></Label>
-                        <Label Content="{Binding ActualPath}" FontSize="10"></Label>
+                        <Label Content="{Binding ActualPath}" Foreground="#888888" FontSize="10"></Label>
                     </StackPanel>
                 </StackPanel>
                 <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick">
