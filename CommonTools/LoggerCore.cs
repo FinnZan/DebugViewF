@@ -21,7 +21,7 @@ namespace FinnZan.Utilities
         public static void Start(string name, int logDepth)
         {
             _appName = name;
-            _logDepth = logDepth + 1;
+            _logDepth = logDepth;
 
             StopWatch.Start();
 
@@ -87,11 +87,13 @@ namespace FinnZan.Utilities
                     {
                         var t = new StackTrace();
 
-                        for (int i = _logDepth + levelShift; i < t.GetFrames().Length; i++)
+                        var frames = t.GetFrames();
+
+                        for (int i = _logDepth + levelShift; i < frames.Length; i++)
                         {
                             try
                             {
-                                var frame = t.GetFrame(i);
+                                var frame = frames[i];
                                 if (frame != null)
                                 {
                                     callStack += "[" + frame.GetMethod().DeclaringType.Name + "." + frame.GetMethod().Name + "]";

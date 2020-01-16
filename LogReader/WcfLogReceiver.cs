@@ -57,7 +57,7 @@ namespace FinnZan.Utilities
                 lock(Events)
                 {
                     Events.Insert(0, e);
-                    Updated();
+                    Updated?.Invoke();
                 }
             }
         }

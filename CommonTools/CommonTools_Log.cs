@@ -25,13 +25,13 @@
         ///     How many layaer up on the stack we should go so we can show the actual method we are interested in 
         /// </param>
         /// <param name="writeFile"></param>        
-        public static string InitializeDebugger(string appName, int logDepth = 1, bool writeFile = false)
+        public static string InitializeDebugger(string appName)
         {
             _appName = appName.Replace(" ", "_");
 
             PutLogger();
             
-            LoggerCore.Start(_appName, logDepth);
+            LoggerCore.Start(_appName, 2);
 
             if(AttachTraceListener())
             {

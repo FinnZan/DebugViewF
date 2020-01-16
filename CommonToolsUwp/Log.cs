@@ -10,11 +10,11 @@ namespace FinnZan.Utilities
 
         private static List<string> _outQueue = new List<string>();
 
-        public static string InitializeDebugger(string appName, int logDepth = 1, bool writeFile = false)
+        public static string InitializeDebugger(string appName)
         {
             _appName = appName;
 
-            LoggerCore.Start(_appName, logDepth);
+            LoggerCore.Start(_appName, 2);
             _logEnabled = true;
 
             return "";
