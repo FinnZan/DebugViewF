@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29411.108
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTools", "CommonTools\CommonTools.csproj", "{275A3E0A-1400-436D-AD2D-9E28F40206AB}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -17,6 +17,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAppUwp", "TestAppUwp\TestAppUwp.csproj", "{42F21FB4-0142-4091-AEAB-ED15C079CCE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceViewer", "ReferenceViewer\ReferenceViewer.csproj", "{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonTools.Standard", "CommonTools.Standard\CommonTools.Standard.csproj", "{DE629F51-A322-4456-B051-CF6C52FA5B94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,12 @@ Global
 		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Signed|Any CPU.ActiveCfg = Release|Any CPU
 		{A5A6FB3B-4AA1-4087-B600-A89C5788C5EB}.Signed|Any CPU.Build.0 = Release|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE629F51-A322-4456-B051-CF6C52FA5B94}.Signed|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -125,7 +125,7 @@ namespace FinnZan.Utilities
                 string strEvent = ex.ToString();
 
                 // start output
-                QueueEvent(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, string.Empty);
+                QueueEvent(id, AppDomain.CurrentDomain.FriendlyName, time, strEvent, "Exception.Exception");
             }
         }
 

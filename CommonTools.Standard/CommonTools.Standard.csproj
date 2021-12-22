@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\CommonTools\LoggerCore.cs" Link="LoggerCore.cs" />
+    <Compile Include="..\LogReader\IFinnZanLog.cs" Link="IFinnZanLog.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.3.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
