@@ -1,36 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ReferenceViewer
 {
-    public class AssemblyFile
+    public class Project
     {
-        public AssemblyFile(string actualPath, DateTime time, bool isLocal)
+        public Project(string actualPath) 
         {
             ActualPath = actualPath;
             Projects = new List<AssemblyReference>();
-            LastModified = time;
-            IsLocal = isLocal;
         }
-
-        public DateTime LastModified { get; }
 
         public string Name => Path.GetFileName(ActualPath);
 
         public string ActualPath { get; }
 
         public List<AssemblyReference> Projects { get; }
-
-        public bool IsLocal 
-        {
-            get;
-        }
-    }
-
-    public enum UsageType
-    {
-        Reference,
-        Link
     }
 }

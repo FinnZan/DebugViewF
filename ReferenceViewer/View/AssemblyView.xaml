@@ -26,16 +26,17 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Content="{Binding LastModified}" FontSize="10"></Label>
-                        <Label Content="{Binding ActualPath}" Foreground="#888888" FontSize="10"></Label>
+                        <Label Content="{Binding ActualPath}" Foreground="#888888" FontSize="10" MouseDoubleClick="Label_MouseDoubleClick"  Cursor="Hand"></Label>
                     </StackPanel>
                 </StackPanel>
-                <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick">
+                <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick"  Cursor="Hand">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="1">
                                 <Label Content="{Binding Usage}"></Label>
                                 <Label Content="{Binding ProjectName}" FontWeight="Bold"></Label>
                                 <Label Content="{Binding ReferencePath}" FontSize="10"></Label>
+                                <Label Content="{Binding ProjectType}" FontWeight="Bold"></Label>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

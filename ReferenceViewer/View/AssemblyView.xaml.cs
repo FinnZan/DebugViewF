@@ -38,5 +38,19 @@ namespace ReferenceViewer
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var selected = this.DataContext as AssemblyFile;
+                var folder = System.IO.Path.GetDirectoryName(selected.ActualPath);         
+                Process.Start(folder);           
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
     }
 }

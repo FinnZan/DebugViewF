@@ -44,29 +44,4 @@ namespace ReferenceViewer
             }
         }
     }
-
-    public class NugetReference
-    {
-        public NugetReference(string projName, string projectFile, string version)
-        {
-            ProjectName = projName;
-            ProjecFile = projectFile;
-            Version = version;
-        }
-
-        public string ProjectName
-        {
-            get;
-        }
-
-        public string ProjecFile
-        {
-            get;
-        }
-
-        public string Version
-        {
-            get;
-        }
-    }
 }

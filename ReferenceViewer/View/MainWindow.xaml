@@ -31,6 +31,15 @@
           </ListBox.ItemTemplate>
         </ListBox>
       </TabItem>
-    </TabControl>
+            <TabItem Header="Projects">
+                <ListBox x:Name="lbxProjectResult" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <local:ProjectView/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+        </TabControl>
   </Grid>
 </Window>

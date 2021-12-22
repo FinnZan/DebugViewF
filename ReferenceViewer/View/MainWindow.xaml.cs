@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace ReferenceViewer
 {
@@ -15,16 +13,19 @@ namespace ReferenceViewer
     public partial class MainWindow : Window
     {
         private ReferenceFinder _referenceFinder = new ReferenceFinder();
-        
+
         public MainWindow()
         {
             InitializeComponent();
 
             EventManager.RegisterClassHandler(typeof(TextBox), TextBox.KeyUpEvent, new System.Windows.Input.KeyEventHandler(TextBox_KeyUp));
-            
-            tbSolutionPath.Text = @"E:\Dell\Projects\DPM\src\dpm\Source";
 
-            Reload();
+            var path = Properties.Settings.Default["Path"] as string;
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) 
+            {
+                tbSolutionPath.Text = path;
+                Reload();
+            }
         }
 
         private void Reload()
@@ -32,6 +33,8 @@ namespace ReferenceViewer
             try
             {
                 _referenceFinder.Load(tbSolutionPath.Text);
+                Properties.Settings.Default["Path"] = tbSolutionPath.Text;
+                Properties.Settings.Default.Save();
             }
             catch(Exception ex)
             {
@@ -44,6 +47,9 @@ namespace ReferenceViewer
 
             lbxNugetResult.ItemsSource = null;
             lbxNugetResult.ItemsSource = _referenceFinder.NuGetPackages;
+
+            lbxProjectResult.ItemsSource = null;
+            lbxProjectResult.ItemsSource = _referenceFinder.Projects;
         }
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
@@ -60,21 +66,6 @@ namespace ReferenceViewer
             {
                 Reload();
             }
-        }
-    }
-
-    public class BooleanToColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var b = (bool)value;
-
-            return b ? Color.FromRgb(0xEE, 0xEE, 0xEE) : Color.FromRgb(0xFF, 0xEE, 0xEE);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

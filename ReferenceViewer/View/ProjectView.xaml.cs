@@ -17,21 +17,35 @@ using System.Windows.Shapes;
 namespace ReferenceViewer
 {
     /// <summary>
-    /// Interaction logic for NugetPackageView.xaml
+    /// Interaction logic for AssemblyView.xaml
     /// </summary>
-    public partial class NugetPackageView : UserControl
+    public partial class ProjectView : UserControl
     {
-        public NugetPackageView()
+        public ProjectView()
         {
             InitializeComponent();
         }
-
+        
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                var selected = ((ListBox)sender).SelectedItem as NugetReference;
-                Process.Start(App.TextEditor, $"\"{selected.ProjecFile}\"");
+                var selected = ((ListBox)sender).SelectedItem as AssemblyReference;
+                Process.Start(App.TextEditor, selected.ProjecFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var selected = this.DataContext as AssemblyFile;
+                var folder = System.IO.Path.GetDirectoryName(selected.ActualPath);         
+                Process.Start(folder);           
             }
             catch (Exception ex)
             {
