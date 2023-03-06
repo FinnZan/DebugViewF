@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceViewer", "Referenc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonTools.Standard", "CommonTools.Standard\CommonTools.Standard.csproj", "{DE629F51-A322-4456-B051-CF6C52FA5B94}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAppCore", "TestAppCore\TestAppCore\TestAppCore.csproj", "{FD81F807-3374-4B4C-9BC9-483CF9518B6B}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHeaderChecker", "FileHeaderChecker\FileHeaderChecker.csproj", "{70CACFC0-D50C-4ABF-AE6D-75960CE119CC}"
 EndProject
 Global
