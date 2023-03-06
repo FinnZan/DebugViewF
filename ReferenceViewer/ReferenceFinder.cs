@@ -31,6 +31,7 @@ namespace ReferenceViewer
 
             Assemblies.Clear();
             NuGetPackages.Clear();
+            Projects.Clear();
 
             var allProjects = Directory.GetFiles(_root, "*.csproj", SearchOption.AllDirectories);
 
@@ -39,10 +40,10 @@ namespace ReferenceViewer
                 var projNode = XDocument.Load(projFile).Root;
                 var projName = System.IO.Path.GetFileName(projFile);
 
-                if (projName.EndsWith("f.csproj"))
-                {
-                    continue;
-                }
+                //if (projName.EndsWith("f.csproj"))
+                //{
+                //    continue;
+                //}
 
                 ProjectType projectType = ProjectType.Framework;
 
@@ -131,7 +132,7 @@ namespace ReferenceViewer
             if (asmb == null)
             {
                 var time = GetFileTime(fullPath);
-                asmb = new AssemblyFile(fullPath, time, fullPath.StartsWith(_root));
+                asmb = new AssemblyFile(fullPath, time, File.Exists(fullPath) && fullPath.StartsWith(_root));
                 Assemblies.Add(asmb);
             }
             asmb.Projects.Add(new AssemblyReference(projName, projectFile, UsageType.Reference, hint, projectType));

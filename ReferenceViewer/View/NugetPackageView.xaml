@@ -22,29 +22,31 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Label Content="{Binding Name}" FontSize="14"  FontWeight="Bold"></Label>
                 </StackPanel>
-                <ListBox Grid.Row="1" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" Margin="1" MouseDoubleClick="ListBox_MouseDoubleClick">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Content="{Binding Version}"></Label>
-                                <Label Content="{Binding ProjectName}" FontWeight="Bold"></Label>
-                                <Label Content="{Binding ProjectType}" FontWeight="Bold"></Label>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Template>
-                        <ControlTemplate TargetType="ItemsControl">
-                            <Border>
-                                <ItemsPresenter />
-                            </Border>
-                        </ControlTemplate>
-                    </ListBox.Template>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
+                <ScrollViewer Grid.Row="1"  HorizontalAlignment="Stretch" Margin="1">
+                    <ListBox ItemsSource="{Binding Projects}" MouseDoubleClick="ListBox_MouseDoubleClick" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <Label Content="{Binding Version}"></Label>
+                                    <Label Content="{Binding ProjectName}" FontWeight="Bold"></Label>
+                                    <Label Content="{Binding ProjectType}" FontWeight="Bold"></Label>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.Template>
+                            <ControlTemplate TargetType="ItemsControl">
+                                <Border>
+                                    <ItemsPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </ListBox.Template>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </ScrollViewer>            
             </Grid>
         </Grid>
     </Grid>
