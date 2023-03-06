@@ -79,6 +79,21 @@ namespace FinnZan.Utilities
                     BindAppDomains();
                 }
             });
+
+            try
+            {
+                var filtersEx = Properties.Settings.Default["FiltersEx"] as string;
+
+                var toks = filtersEx.Split('$');
+                foreach (var t in toks.Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    _vm.AddFilter(FilterType.Event, t, false);
+                }
+            }
+            catch (Exception ex) 
+            {
+                
+            }
         }
 
         private void BindAppDomains()
@@ -136,6 +151,8 @@ namespace FinnZan.Utilities
                 {
                     var type = (FilterType)Enum.Parse(typeof(FilterType), cbxFilterTypes.SelectedItem.ToString(), false);                
                     _vm.AddFilter(type, tbKey.Text, !cbExclude.IsChecked.Value);
+
+                    UpdateFilterSettings();
                 }                
             }
             catch (Exception ex)
@@ -163,11 +180,24 @@ namespace FinnZan.Utilities
             {
                 var curItem = ((ListBoxItem)lbxFiltersEx.ContainerFromElement((Button)sender)).Content as Filter;
                 _vm.DeleteFilter(curItem, false);
+
+                UpdateFilterSettings();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void UpdateFilterSettings() 
+        {
+            var s = string.Empty;
+            foreach (var filter in _vm.FiltersEx.Where(x => x.Type == FilterType.Event))
+            {
+                s += "$" + filter.Key;
+            }
+            Properties.Settings.Default["FiltersEx"] = s;
+            Properties.Settings.Default.Save();
         }
 
         private void BtClear_Click(object sender, RoutedEventArgs e)
