@@ -17,10 +17,16 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
                             <ColumnDefinition Width="50"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Content="{Binding}" MouseDoubleClick="_missingFiles_MouseDoubleClick"/>
-                        <Button Grid.Column="1" Width="50" Click="Button_Click_1">Add</Button>
+                        <Label Content="{Binding FullPath}" MouseDoubleClick="_missingFiles_MouseDoubleClick"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Label FontSize="10" Content="{Binding Start.Year}" />
+                            <Label FontSize="10" Content="{Binding End.Year}" />
+                            <Label FontSize="10" Content="{Binding Author}" />
+                        </StackPanel>               
+                        <Button Grid.Column="2" Width="50" Click="Button_Click_1">Add</Button>
                     </Grid>   
                 </DataTemplate>
             </ListView.ItemTemplate>
