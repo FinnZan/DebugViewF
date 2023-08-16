@@ -129,6 +129,23 @@ namespace FinnZan.Utilities
             }
         }
 
+        public static void Watch(string key, string value)
+        {
+            lock (OutQueue)
+            {
+                try
+                {
+                    var strEvent = value;
+
+                    // Get source
+                    string callStack = "";
+
+                    QueueEvent(0, $"WATCH#{key}", 0, value, callStack);
+                }
+                catch (Exception ex) { }
+            }
+        }
+
         private static bool QueueEvent(int id, string appDomain, long time, string strEvent, string pCallstack)
         {
             string callStack = pCallstack;

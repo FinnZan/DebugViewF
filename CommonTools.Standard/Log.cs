@@ -35,5 +35,10 @@ namespace FinnZan.Utilities
                 LoggerCore.HandleException(ex);
             }
         }
+
+        public static void Watch(string key, string value) 
+        {
+            LoggerCore.Watch(key, value);
+        }
     }
 }

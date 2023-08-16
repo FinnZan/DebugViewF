@@ -23,6 +23,8 @@ namespace FinnZan.Utilities
             }
         }
 
+        public Dictionary<string, string> Watches { get; private set; } = new Dictionary<string, string>();
+
         public bool StartListening(string name)
         {
             try
@@ -59,23 +61,32 @@ namespace FinnZan.Utilities
                             {
                                 var toks = line.Split('\t');
 
-                                LogEvent e = new LogEvent();
-                                e.AppDomain = toks[1];
-                                e.Time = toks[2];
-                                e.ThreadID = int.Parse(toks[0]);
-                                e.Event = toks[3];
-                                e.CallStack = CallStackItem.ParseCallStask(toks[4]);
-                                if (e.CallStack != null)
+                                if (toks[1].StartsWith("WATCHE#"))
                                 {
-                                    e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
+                                    var k = toks[1].Split('#')[1];
+                                    Watches[k] = toks[3];
                                 }
                                 else
                                 {
-                                    e.Source = string.Empty;
-                                }
-                                _logs.Insert(0, e);
 
-                                Updated();
+                                    LogEvent e = new LogEvent();
+                                    e.AppDomain = toks[1];
+                                    e.Time = toks[2];
+                                    e.ThreadID = int.Parse(toks[0]);
+                                    e.Event = toks[3];
+                                    e.CallStack = CallStackItem.ParseCallStask(toks[4]);
+                                    if (e.CallStack != null)
+                                    {
+                                        e.Source = $"{e.CallStack[0].Class}.{e.CallStack[0].Method}";
+                                    }
+                                    else
+                                    {
+                                        e.Source = string.Empty;
+                                    }
+                                    _logs.Insert(0, e);                              
+                                }
+
+                                Updated?.Invoke();
                             }
                         }
                         catch (IOException ex)

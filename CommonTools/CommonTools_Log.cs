@@ -71,6 +71,11 @@
             }
         }
 
+        public static void Watch(string key, string value)
+        {
+            LoggerCore.Watch(key, value);
+        }
+
         #region Private
 
         private static void PutLogger()

@@ -14,6 +14,11 @@ namespace FinnZan.Utilities
         List<LogEvent> Events
         {
             get;
-        }         
+        }
+
+        Dictionary<string, string> Watches 
+        {
+            get;
+        }
     }
 }

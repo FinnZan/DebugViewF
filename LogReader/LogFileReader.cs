@@ -11,8 +11,10 @@ namespace FinnZan.Utilities
     {
         public List<LogEvent> Events
         {
-            get; private set;
+            get; protected set;
         }
+
+        public Dictionary<string, string> Watches => new Dictionary<string, string>();
 
         public event SourceEventHandler Updated;
 

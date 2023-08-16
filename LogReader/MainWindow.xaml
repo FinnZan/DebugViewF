@@ -14,6 +14,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid Margin="5" Background="White" Name="panelBrowse" Visibility="Collapsed">
@@ -23,7 +24,25 @@
             <Grid Margin="5" Background="Black" Name="panelAppName" Visibility="Collapsed">
                 <Label Name="lbAppName" Foreground="White" FontWeight="Bold" FontSize="32" VerticalAlignment="Center"></Label>
             </Grid>
-            <Grid Grid.Row="1" Margin="5">
+            
+            <Grid Grid.Row="1">
+                <ListView x:Name="_listWatches">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Content="{Binding Key}" FontSize="10" />
+                                <Label Grid.Column="1" Content="{Binding Value}" FontWeight="Bold" FontSize="10" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            
+            <Grid Grid.Row="2" Margin="5">
                 <Expander IsExpanded="True">
                     <Expander.Header>
                         <Label FontWeight="Bold" FontSize="16">Filters</Label>
@@ -80,8 +99,8 @@
                     </Grid>
                 </Expander>
             </Grid>
-
-            <Grid Grid.Row="2" >
+            
+            <Grid Grid.Row="3" >
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition Height="50"></RowDefinition>
@@ -107,14 +126,14 @@
                                 </Grid.Background>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"></ColumnDefinition>
+                                    <ColumnDefinition Width="50"></ColumnDefinition>
                                     <ColumnDefinition Width="120"></ColumnDefinition>
-                                    <ColumnDefinition Width="30"></ColumnDefinition>
                                     <ColumnDefinition Width="300"></ColumnDefinition>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" Content="{Binding ThreadID}" FontSize="10" />
-                                <Label Grid.Column="1" Content="{Binding AppDomain}" FontSize="10" />
-                                <Label Grid.Column="2" Content="{Binding Time}" FontSize="8" />
+                                <Label Grid.Column="1" Content="{Binding AppDomain}" ToolTip="{Binding AppDomain}" FontSize="10" />
+                                <Label Grid.Column="2" Content="{Binding Time}" FontSize="10" />
                                 <Label Grid.Column="3" Content="{Binding Source}" FontSize="10" FontWeight="Bold" />
                                 <Label Grid.Column="4" Content="{Binding Event}" FontSize="10"  />
                             </Grid>
